@@ -1,0 +1,29 @@
+{
+  "name": "tbo",
+  "version": "0.1.0",
+  "description": "",
+  "main": "app.js",
+  "dependencies": {
+    "bluebird": "^3.5.0",
+    "koa": "^2.2.0",
+    "koa-router": "^7.1.1",
+    "koa-static": "^3.0.0",
+    "modee": "^1.2.0",
+    "superagent": "^3.5.2",
+    "superagent-proxy": "^1.0.2",
+    "vue": "^2.2.6",
+    "vue-router": "^2.4.0"
+  },
+  "devDependencies": {},
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/U2FsdGVkX1/Tbo-Node.git"
+  },
+  "author": "U2FsdGVkX1",
+  "license": "LGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/U2FsdGVkX1/Tbo-Node/issues"
+  },
+  "homepage": "https://github.com/U2FsdGVkX1/Tbo-Node#readme"
+}
