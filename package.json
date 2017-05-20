@@ -15,7 +15,9 @@
     "vue-router": "^2.4.0"
   },
   "devDependencies": {},
-  "scripts": {},
+  "scripts": {
+    "start": "node app.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/U2FsdGVkX1/Tbo-Node.git"
