@@ -188,6 +188,7 @@ class Core {
         }
         if (typeof func != 'undefined') {
             param.unshift(data);
+            initParam.unshift(data);
         }
 
         return [func, param, initParam];
