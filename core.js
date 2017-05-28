@@ -28,6 +28,11 @@ class Core {
         var data, offset = 0;
         while (true) {
             [data] = await telegram.getUpdates(offset, 100, 3600);
+            if (typeof data.result == 'undefined') {
+                log.error(util.format("getUpdates 不知道怎么就 boom 了，建议排查网络：%s", data));
+                break;
+            }
+            
             if (data.result.length) {
                 data = data.result;
                 offset = data[data.length - 1].update_id + 1;
@@ -56,7 +61,6 @@ class Core {
                     });
                 }, this);
             }
-            
         }
     }
     async parse (data)
