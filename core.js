@@ -43,10 +43,10 @@ class Core {
                         if (typeof func != 'undefined') {
                             switch (func) {
                                 case 'command':
-                                    log.info(util.format("收到一条命令 %s", param[1]));
+                                    log.info(util.format("『%s』: %s", param[0].message.from.first_name, param[0].message.text));
                                     break;
                                 case 'message':
-                                    log.info(util.format("收到一条消息 %s", param[1]));
+                                    log.info(util.format("『%s』: %s", param[0].message.from.first_name, param[0].message.text));
                                     break;
                             }
                             plugins.forEach((value, index, array) => {
