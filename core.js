@@ -43,10 +43,16 @@ class Core {
                         if (typeof func != 'undefined') {
                             switch (func) {
                                 case 'command':
-                                    log.info(util.format("『%s』: %s", param[0].message.from.first_name, param[0].message.text));
+                                    if (param[0].message.chat.id < 0)
+                                        log.info(util.format("[%s]『%s』: %s", param[5].title, param[0].message.from.first_name, param[0].message.text));
+                                    else
+                                        log.info(util.format("[Private]『%s』: %s", param[0].message.from.first_name, param[0].message.text));
                                     break;
                                 case 'message':
-                                    log.info(util.format("『%s』: %s", param[0].message.from.first_name, param[0].message.text));
+                                    if (param[0].message.chat.id < 0)
+                                        log.info(util.format("[%s]『%s』: %s", param[4].title, param[0].message.from.first_name, param[0].message.text));
+                                    else
+                                        log.info(util.format("[Private]『%s』: %s", param[0].message.from.first_name, param[0].message.text));
                                     break;
                             }
                             plugins.forEach((value, index, array) => {
