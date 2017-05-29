@@ -44,15 +44,15 @@ class Core {
                             switch (func) {
                                 case 'command':
                                     if (param[0].message.chat.id < 0)
-                                        log.info(util.format("[%s]『%s』: %s", param[5].title, param[0].message.from.first_name, param[0].message.text));
+                                        log.info(util.format("[%s]『%s』: %s", param[5].title, param[4].first_name, param[0].message.text));
                                     else
-                                        log.info(util.format("[Private]『%s』: %s", param[0].message.from.first_name, param[0].message.text));
+                                        log.info(util.format("[Private]『%s』: %s", param[4].first_name, param[0].message.text));
                                     break;
                                 case 'message':
                                     if (param[0].message.chat.id < 0)
-                                        log.info(util.format("[%s]『%s』: %s", param[4].title, param[0].message.from.first_name, param[0].message.text));
+                                        log.info(util.format("[%s]『%s』: %s", param[4].title, param[3].first_name, param[1]));
                                     else
-                                        log.info(util.format("[Private]『%s』: %s", param[0].message.from.first_name, param[0].message.text));
+                                        log.info(util.format("[Private]『%s』: %s", param[3].first_name, param[1]));
                                     break;
                             }
                             plugins.forEach((value, index, array) => {
