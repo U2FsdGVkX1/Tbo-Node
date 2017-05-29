@@ -5,10 +5,10 @@ class hello extends base {
         super();
         this.log.info("Hello World!");
     }
-    async init (func, from, chat, date) {
+    async init (data, func, from, chat, date) {
 
     }
-    async message (message, message_id, from, chat, date) {
+    async message (data, message, message_id, from, chat, date) {
         this.telegram.sendMessage(from.id, '你吼', message_id);
     }
 }
