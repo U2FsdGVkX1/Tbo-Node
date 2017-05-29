@@ -19,7 +19,7 @@ class hello extends base {
     async sticker (data, sticker, message_id, from, chat, date) {
         
     }
-    async photo (data, photo, message_id, from, chat, date) {
+    async photo (data, photo, caption, message_id, from, chat, date) {
         
     }
     async callback_query (data, callback_data, callback_id, callback_from, message_id, from, chat, date) {
