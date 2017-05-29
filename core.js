@@ -43,30 +43,42 @@ class Core {
                         if (typeof func != 'undefined') {
                             switch (func) {
                                 case 'command':
-                                    if (param[0].message.chat.id < 0)
+                                    if (param[5].id < 0)
                                         log.info(util.format("[%s]『%s』: %s", param[5].title, param[4].first_name, param[0].message.text));
                                     else
                                         log.info(util.format("[Private]『%s』: %s", param[4].first_name, param[0].message.text));
                                     break;
+
                                 case 'message':
-                                    if (param[0].message.chat.id < 0)
+                                    if (param[4].id < 0)
                                         log.info(util.format("[%s]『%s』: %s", param[4].title, param[3].first_name, param[1]));
                                     else
                                         log.info(util.format("[Private]『%s』: %s", param[3].first_name, param[1]));
                                     break;
+
                                 case 'sticker':
-                                    if (param[0].message.chat.id < 0)
-                                        log.info(util.format("[%s]『%s』: %s(sticker)", param[4].title, param[3].first_name, param[1].emoji));
+                                    let emoji = '🐸 ';
+                                    if (typeof param[1].emoji != 'undefined')
+                                        emoji = param[1].emoji + ' ';
+
+                                    if (param[4].id < 0)
+                                        log.info(util.format("[%s]『%s』: %s[sticker]", param[4].title, param[3].first_name, emoji));
                                     else
-                                        log.info(util.format("[Private]『%s』: %s(sticker)", param[3].first_name, param[1].emoji));
+                                        log.info(util.format("[Private]『%s』: %s[sticker]", param[3].first_name, emoji));
                                     break;
+
                                 case 'photo':
-                                    if (param[0].message.chat.id < 0)
-                                        log.info(util.format("[%s]『%s』: 图片怎么显示给你呢=.=(photo)", param[4].title, param[3].first_name));
+                                    let caption = '';
+                                    if (param[2] != '')
+                                        caption = ', ' + param[2];
+                                    
+                                    if (param[5].id < 0)
+                                        log.info(util.format("[%s]『%s』: [Photo]%s", param[5].title, param[4].first_name, caption));
                                     else
-                                        log.info(util.format("[Private]『%s』: 图片怎么显示给你呢=.=(photo)", param[3].first_name));
+                                        log.info(util.format("[Private]『%s』: [Photo]%s", param[4].first_name, caption));
                                     break;
                             }
+
                             plugins.forEach((value, index, array) => {
                                 if (typeof value.object.init != 'undefined') {
                                     value.object.init.apply(value.object, initParam);
@@ -172,9 +184,15 @@ class Core {
                     data.message.date,
                 ];
             } else if (typeof data.message.photo != 'undefined') {
+                let caption = '';
+                if (typeof data.message.caption != 'undefined') {
+                    caption = data.message.caption;
+                }
+
                 func = 'photo';
                 param = [
                     data.message.photo,
+                    caption,
                     data.message.message_id,
                     data.message.from,
                     data.message.chat,
