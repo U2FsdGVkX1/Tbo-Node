@@ -9,5 +9,6 @@ module.exports = {
         token: "",
         name: ""
     },
-    master: ""
+    master: "",
+    debug: true
 }

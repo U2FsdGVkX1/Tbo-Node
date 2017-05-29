@@ -54,6 +54,18 @@ class Core {
                                     else
                                         log.info(util.format("[Private]『%s』: %s", param[3].first_name, param[1]));
                                     break;
+                                case 'sticker':
+                                    if (param[0].message.chat.id < 0)
+                                        log.info(util.format("[%s]『%s』: %s(sticker)", param[4].title, param[3].first_name, param[1].emoji));
+                                    else
+                                        log.info(util.format("[Private]『%s』: %s(sticker)", param[3].first_name, param[1].emoji));
+                                    break;
+                                case 'photo':
+                                    if (param[0].message.chat.id < 0)
+                                        log.info(util.format("[%s]『%s』: 图片怎么显示给你呢=.=(photo)", param[4].title, param[3].first_name));
+                                    else
+                                        log.info(util.format("[Private]『%s』: 图片怎么显示给你呢=.=(photo)", param[3].first_name));
+                                    break;
                             }
                             plugins.forEach((value, index, array) => {
                                 if (typeof value.object.init != 'undefined') {
@@ -133,6 +145,36 @@ class Core {
                 func = 'left_member';
                 param = [
                     data.message.left_chat_member,
+                    data.message.message_id,
+                    data.message.from,
+                    data.message.chat,
+                    data.message.date,
+                ];
+                initParam = [
+                    func,
+                    data.message.from,
+                    data.message.chat,
+                    data.message.date,
+                ];
+            } else if (typeof data.message.sticker != 'undefined') {
+                func = 'sticker';
+                param = [
+                    data.message.sticker,
+                    data.message.message_id,
+                    data.message.from,
+                    data.message.chat,
+                    data.message.date,
+                ];
+                initParam = [
+                    func,
+                    data.message.from,
+                    data.message.chat,
+                    data.message.date,
+                ];
+            } else if (typeof data.message.photo != 'undefined') {
+                func = 'photo';
+                param = [
+                    data.message.photo,
                     data.message.message_id,
                     data.message.from,
                     data.message.chat,
