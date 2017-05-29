@@ -9,7 +9,7 @@ class hello extends base {
 
     }
     async message (data, message, message_id, from, chat, date) {
-        this.telegram.sendMessage(from.id, '你吼', message_id);
+        
     }
 }
 
