@@ -5,9 +5,10 @@ const db = require('./lib/db');
 const log = new (require('./lib/log'))();
 const telegram = new (require('./lib/telegram'))();
 
+
 class Core {
     async run () {
-        log.info('正在扫描插件');
+        log.info('正在扫描插件', 'SYSTEM');
         var plugins = fs.readdirSync('./plugins');
         plugins = plugins.map(value => {
             return {
@@ -19,17 +20,19 @@ class Core {
             return fs.existsSync(value.path);
         });
 
-        log.info('正在初始化插件');
+        log.info('正在初始化插件', 'SYSTEM');
         plugins.forEach((value, index, array) => {
             array[index].object = new (require(value.path))()
+            log.info("插件已加载完成", value.pcn);
         }, this);
-        
-        log.info('初始化完成');
+        log.info(util.format("已加载 %d 个插件", plugins.length), 'SYSTEM');
+
+        log.info('初始化完成', 'SYSTEM');
         var data, offset = 0;
         while (true) {
             [data] = await telegram.getUpdates(offset, 100, 3600);
             if (typeof data.result == 'undefined') {
-                log.error(util.format("getUpdates 不知道怎么就 boom 了，建议排查网络：%s", data));
+                log.error(util.format("getUpdates 不知道怎么就 boom 了，建议排查网络：%s", data), 'SYSTEM');
                 break;
             }
             
@@ -44,16 +47,16 @@ class Core {
                             switch (func) {
                                 case 'command':
                                     if (param[5].id < 0)
-                                        log.info(util.format("[%s]『%s』: %s", param[5].title, param[4].first_name, param[0].message.text));
+                                        log.info(util.format("[%s]『%s』: %s", param[5].title, param[4].first_name, param[0].message.text), 'Command');
                                     else
-                                        log.info(util.format("[Private]『%s』: %s", param[4].first_name, param[0].message.text));
+                                        log.info(util.format("[Private]『%s』: %s", param[4].first_name, param[0].message.text), 'Command');
                                     break;
 
                                 case 'message':
                                     if (param[4].id < 0)
-                                        log.info(util.format("[%s]『%s』: %s", param[4].title, param[3].first_name, param[1]));
+                                        log.info(util.format("[%s]『%s』: %s", param[4].title, param[3].first_name, param[1]), 'Message');
                                     else
-                                        log.info(util.format("[Private]『%s』: %s", param[3].first_name, param[1]));
+                                        log.info(util.format("[Private]『%s』: %s", param[3].first_name, param[1]), 'Message');
                                     break;
 
                                 case 'sticker':
@@ -62,9 +65,9 @@ class Core {
                                         emoji = param[1].emoji + ' ';
 
                                     if (param[4].id < 0)
-                                        log.info(util.format("[%s]『%s』: %s[sticker]", param[4].title, param[3].first_name, emoji));
+                                        log.info(util.format("[%s]『%s』: %s[sticker]", param[4].title, param[3].first_name, emoji), 'Sticker');
                                     else
-                                        log.info(util.format("[Private]『%s』: %s[sticker]", param[3].first_name, emoji));
+                                        log.info(util.format("[Private]『%s』: %s[sticker]", param[3].first_name, emoji), 'Sticker');
                                     break;
 
                                 case 'photo':
@@ -73,9 +76,9 @@ class Core {
                                         caption = ', ' + param[2];
                                     
                                     if (param[5].id < 0)
-                                        log.info(util.format("[%s]『%s』: [Photo]%s", param[5].title, param[4].first_name, caption));
+                                        log.info(util.format("[%s]『%s』: [Photo]%s", param[5].title, param[4].first_name, caption), 'Photo');
                                     else
-                                        log.info(util.format("[Private]『%s』: [Photo]%s", param[4].first_name, caption));
+                                        log.info(util.format("[Private]『%s』: [Photo]%s", param[4].first_name, caption), 'Photo');
                                     break;
                             }
 
