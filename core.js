@@ -65,9 +65,9 @@ class Core {
                                         emoji = param[1].emoji + ' ';
 
                                     if (param[4].id < 0)
-                                        log.info(util.format("[%s]『%s』: %s[sticker]", param[4].title, param[3].first_name, emoji), 'Sticker');
+                                        log.info(util.format("[%s]『%s』: %s[Sticker]", param[4].title, param[3].first_name, emoji), 'Sticker');
                                     else
-                                        log.info(util.format("[Private]『%s』: %s[sticker]", param[3].first_name, emoji), 'Sticker');
+                                        log.info(util.format("[Private]『%s』: %s[Sticker]", param[3].first_name, emoji), 'Sticker');
                                     break;
 
                                 case 'photo':
