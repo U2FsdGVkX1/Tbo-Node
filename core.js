@@ -5,9 +5,10 @@ const db = require('./lib/db');
 const log = new (require('./lib/log'))();
 const telegram = new (require('./lib/telegram'))();
 
+
 class Core {
     async run () {
-        log.info('正在扫描插件');
+        log.info('正在扫描插件', 'SYSTEM');
         var plugins = fs.readdirSync('./plugins');
         plugins = plugins.map(value => {
             return {
@@ -19,17 +20,19 @@ class Core {
             return fs.existsSync(value.path);
         });
 
-        log.info('正在初始化插件');
+        log.info('正在初始化插件', 'SYSTEM');
         plugins.forEach((value, index, array) => {
             array[index].object = new (require(value.path))()
+            log.info("插件已加载完成", value.pcn);
         }, this);
-        
-        log.info('初始化完成');
+        log.info(util.format("已加载 %d 个插件", plugins.length), 'SYSTEM');
+
+        log.info('初始化完成', 'SYSTEM');
         var data, offset = 0;
         while (true) {
             [data] = await telegram.getUpdates(offset, 100, 3600);
             if (typeof data.result == 'undefined') {
-                log.error(util.format("getUpdates 不知道怎么就 boom 了，建议排查网络：%s", data));
+                log.error(util.format("getUpdates 不知道怎么就 boom 了，建议排查网络：%s", data), 'SYSTEM');
                 break;
             }
             
@@ -43,30 +46,48 @@ class Core {
                         if (typeof func != 'undefined') {
                             switch (func) {
                                 case 'command':
-                                    if (param[0].message.chat.id < 0)
-                                        log.info(util.format("[%s]『%s』: %s", param[5].title, param[4].first_name, param[0].message.text));
+                                    if (param[5].id < 0)
+                                        log.info(util.format("[%s]『%s』: %s", param[5].title, param[4].first_name, param[0].message.text), 'Command');
                                     else
-                                        log.info(util.format("[Private]『%s』: %s", param[4].first_name, param[0].message.text));
+                                        log.info(util.format("[Private]『%s』: %s", param[4].first_name, param[0].message.text), 'Command');
                                     break;
+
                                 case 'message':
-                                    if (param[0].message.chat.id < 0)
-                                        log.info(util.format("[%s]『%s』: %s", param[4].title, param[3].first_name, param[1]));
+                                    if (param[4].id < 0)
+                                        log.info(util.format("[%s]『%s』: %s", param[4].title, param[3].first_name, param[1]), 'Message');
                                     else
-                                        log.info(util.format("[Private]『%s』: %s", param[3].first_name, param[1]));
+                                        log.info(util.format("[Private]『%s』: %s", param[3].first_name, param[1]), 'Message');
                                     break;
+
                                 case 'sticker':
-                                    if (param[0].message.chat.id < 0)
-                                        log.info(util.format("[%s]『%s』: %s(sticker)", param[4].title, param[3].first_name, param[1].emoji));
+                                    let emoji = '🐸 ';
+                                    if (typeof param[1].emoji != 'undefined')
+                                        emoji = param[1].emoji + ' ';
+
+                                    if (param[4].id < 0)
+                                        log.info(util.format("[%s]『%s』: %s[Sticker]", param[4].title, param[3].first_name, emoji), 'Sticker');
                                     else
-                                        log.info(util.format("[Private]『%s』: %s(sticker)", param[3].first_name, param[1].emoji));
+                                        log.info(util.format("[Private]『%s』: %s[Sticker]", param[3].first_name, emoji), 'Sticker');
                                     break;
+
                                 case 'photo':
-                                    if (param[0].message.chat.id < 0)
-                                        log.info(util.format("[%s]『%s』: 图片怎么显示给你呢=.=(photo)", param[4].title, param[3].first_name));
+                                    let caption = '';
+                                    if (param[2] != '')
+                                        caption = ', ' + param[2];
+                                    
+                                    if (param[5].id < 0)
+                                        log.info(util.format("[%s]『%s』: [Photo]%s", param[5].title, param[4].first_name, caption), 'Photo');
                                     else
-                                        log.info(util.format("[Private]『%s』: 图片怎么显示给你呢=.=(photo)", param[3].first_name));
+                                        log.info(util.format("[Private]『%s』: [Photo]%s", param[4].first_name, caption), 'Photo');
+                                    break;
+                                case 'voice':
+                                    if (param[5].id < 0)
+                                        log.info(util.format("[%s]『%s』: [Voice]", param[5].title, param[4].first_name), 'Voice');
+                                    else
+                                        log.info(util.format("[Private]『%s』: [Voice]", param[4].first_name), 'Voice');
                                     break;
                             }
+
                             plugins.forEach((value, index, array) => {
                                 if (typeof value.object.init != 'undefined') {
                                     value.object.init.apply(value.object, initParam);
@@ -172,9 +193,30 @@ class Core {
                     data.message.date,
                 ];
             } else if (typeof data.message.photo != 'undefined') {
+                let caption = '';
+                if (typeof data.message.caption != 'undefined') {
+                    caption = data.message.caption;
+                }
+
                 func = 'photo';
                 param = [
                     data.message.photo,
+                    caption,
+                    data.message.message_id,
+                    data.message.from,
+                    data.message.chat,
+                    data.message.date,
+                ];
+                initParam = [
+                    func,
+                    data.message.from,
+                    data.message.chat,
+                    data.message.date,
+                ];
+            } else if (typeof data.message.voice != 'undefined') {
+                func = 'voice';
+                param = [
+                    data.message.voice,
                     data.message.message_id,
                     data.message.from,
                     data.message.chat,
